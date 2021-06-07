@@ -1,0 +1,17 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.0.19
+    container_name: blablademo
+    ports:
+      - "3306:3306"
+    volumes:
+      # in left from ':' you can insert location for data on your PC(prevent from losing data after docker restarted)
+      - "/home/vitalii/Documents/Dev projects/Digis/blaBlaDemDB/mysql/:/var/lib/mysql/"
+      #windows option to keep data after restart
+      #- "d:\\var\\lib\\mysql\\:/var/lib/mysql/"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=blabla_demo
+      - MYSQL_ROOT_HOST=%
+    restart: "no"
