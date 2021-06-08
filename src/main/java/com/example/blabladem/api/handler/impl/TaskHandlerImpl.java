@@ -5,18 +5,25 @@ import com.example.blabladem.api.service.TaskService;
 import com.example.blabladem.api.service.UserService;
 import com.example.blabladem.domain.Comment;
 import com.example.blabladem.domain.Task;
+import com.example.blabladem.domain.TaskAttachment;
 import com.example.blabladem.domain.TaskDetailsDTO;
 import com.example.blabladem.dto.CommentDTO;
+import com.example.blabladem.dto.TaskAttachmentDTO;
 import com.example.blabladem.dto.TaskDTO;
 import com.example.blabladem.dto.request.CreateTaskRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
+import com.example.blabladem.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TaskHandlerImpl implements TaskHandler {
@@ -63,6 +70,24 @@ public class TaskHandlerImpl implements TaskHandler {
     @Transactional
     public void deleteComment(Long commentId, Long taskId) {
         taskService.deleteCommentByIdAndTaskId(commentId, taskId);
+    }
+
+    @Override
+    @Transactional
+    public void addAttachment(Long taskId, MultipartFile multipartFile) {
+        Task task = taskService.getById(taskId);
+        try {
+            byte[] fileBytes = multipartFile.getBytes();
+            TaskAttachment attachment = TaskAttachment.builder()
+                    .task(task)
+                    .file(fileBytes)
+                    .build();
+            task.getAttachments().add(attachment);
+            taskService.update(task);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new BadRequestException("Exception during file processing");
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.example.blabladem.dto.request.CreateTaskRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface TaskHandler {
     Page<TaskDTO> getAll(Long departmentId, Pageable pageable);
@@ -22,4 +23,6 @@ public interface TaskHandler {
     void addComment(Long taskId, CommentDTO commentDTO);
 
     void deleteComment(Long commentId, Long taskId);
+
+    void addAttachment(Long taskId, MultipartFile multipartFile);
 }
