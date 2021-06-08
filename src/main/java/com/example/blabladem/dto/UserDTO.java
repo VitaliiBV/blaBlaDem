@@ -17,6 +17,9 @@ public class UserDTO {
 
     private DepartmentDTO department;
 
+    @Builder.Default
+    private Long rating = 1L;
+
     public static UserDTO fromEntity(User user){
         if (user==null){
             return null;

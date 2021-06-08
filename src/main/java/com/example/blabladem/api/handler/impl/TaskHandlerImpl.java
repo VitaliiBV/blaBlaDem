@@ -1,6 +1,7 @@
 package com.example.blabladem.api.handler.impl;
 
 import com.example.blabladem.api.handler.TaskHandler;
+import com.example.blabladem.api.impl.ExternalUserInfoServiceImpl;
 import com.example.blabladem.api.service.TaskService;
 import com.example.blabladem.api.service.UserService;
 import com.example.blabladem.domain.Comment;
@@ -8,8 +9,8 @@ import com.example.blabladem.domain.Task;
 import com.example.blabladem.domain.TaskAttachment;
 import com.example.blabladem.domain.TaskDetailsDTO;
 import com.example.blabladem.dto.CommentDTO;
-import com.example.blabladem.dto.TaskAttachmentDTO;
 import com.example.blabladem.dto.TaskDTO;
+import com.example.blabladem.dto.UserDTO;
 import com.example.blabladem.dto.request.CreateTaskRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
 import com.example.blabladem.exception.BadRequestException;
@@ -22,6 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -30,7 +35,44 @@ public class TaskHandlerImpl implements TaskHandler {
 
     private final TaskService taskService;
     private final UserService userService;
-//    private final ExternalUserInfoService externalUserInfoService;
+    private final ExternalUserInfoServiceImpl externalUserInfoService;
+
+    @Override
+    public Page<TaskDTO> getAll(Long departmentId, Pageable pageable) {
+
+        Page<Task> tasks = taskService.getAll(departmentId, pageable);
+
+        Set<Long> userIds = new HashSet<>();
+
+        //Fetching all unique userIds from tasks
+        tasks.forEach(task -> {
+            if (task.getAssignee() != null) {
+                userIds.add(task.getAssignee().getId());
+            }
+            userIds.add(task.getAuthor().getId());
+        });
+
+        //Passing userIds to external service to get extraInfo(rating)
+        Map<Long, Long> extraUserInfo = externalUserInfoService.getExtraUserInfo(userIds);
+
+        Page<TaskDTO> taskDTOS = tasks.map(TaskDTO::fromEntity);
+
+        //Populating UserDTOs with rating received from external service
+        taskDTOS.forEach(taskDTO -> {
+            if (taskDTO.getAssignee() != null) {
+                Long rating = extraUserInfo.get(taskDTO.getAssignee().getId());
+                if (rating!=null){
+                    taskDTO.getAssignee().setRating(rating);
+                }
+            }
+            Long rating = extraUserInfo.get(taskDTO.getAuthor().getId());
+            if (rating!=null){
+                taskDTO.getAuthor().setRating(rating);
+            };
+        });
+
+        return taskDTOS;
+    }
 
     @Override
     @Transactional
@@ -88,11 +130,6 @@ public class TaskHandlerImpl implements TaskHandler {
             log.error(e.getMessage());
             throw new BadRequestException("Exception during file processing");
         }
-    }
-
-    @Override
-    public Page<TaskDTO> getAll(Long departmentId, Pageable pageable) {
-        return taskService.getAll(departmentId, pageable).map(TaskDTO::fromEntity);
     }
 
     @Override

@@ -1,16 +1,18 @@
 package com.example.blabladem.api.impl;
 
-import com.example.blabladem.api.ExternalUserInfoService;
-import com.example.blabladem.dto.ExtraUserInfoDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
-public class ExternalUserInfoServiceImpl implements ExternalUserInfoService {
-    @Override
-    public List<ExtraUserInfoDTO> getExtraUserInfo(List<Long> userIds) {
-        return Collections.emptyList();
+public class ExternalUserInfoServiceImpl {
+    public Map<Long, Long> getExtraUserInfo(Set<Long> userIds) {
+        Map<Long, Long> userRating = new HashMap<>();
+        userIds
+                .forEach(id-> userRating.put(id, ThreadLocalRandom.current().nextLong(0,4)));
+        return userRating;
     }
 }
