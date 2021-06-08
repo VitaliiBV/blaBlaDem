@@ -1,12 +1,10 @@
-package com.example.blabladem.web;
+package com.example.blabladem.api.web;
 
 import com.example.blabladem.api.handler.TaskHandler;
 import com.example.blabladem.domain.TaskDetailsDTO;
 import com.example.blabladem.dto.CommentDTO;
-import com.example.blabladem.dto.TaskAttachmentDTO;
 import com.example.blabladem.dto.TaskDTO;
 import com.example.blabladem.dto.request.CreateTaskRequest;
-import com.example.blabladem.dto.request.GetAllTasksRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,26 +25,24 @@ public class TaskController {
 
     public interface Path {
         String BASE = "/task";
-        String CREATE = "/create";
-        String UPDATE = "/update/{id}";
         String ADD_COMMENT = "/{taskId}/addComment";
-        String DELETE_COMMENT = "/deleteComment/{taskId}/{commentId}";
         String ADD_ATTACHMENT = "/{id}/addAttachment";
-        String TASK_BY_ID = "/{id}";
+        String TASK_ID = "/{id}";
+        String COMMENT_ID = "/{commentId}";
         String ATTACHMENT_BY_TASK_ID_AND_ID = "/{taskId}/{attachmentId}";
     }
 
-    @PostMapping
-    public Page<TaskDTO> getAllTasks(@RequestBody GetAllTasksRequest request, Pageable pageable){
-        return taskHandler.getAll(request, pageable);
+    @GetMapping
+    public Page<TaskDTO> getAllTasks(@RequestParam(required = false) Long departmentId, Pageable pageable){
+        return taskHandler.getAll(departmentId, pageable);
     }
 
-    @PostMapping(Path.CREATE)
+    @PostMapping
     public TaskDTO createTask(@RequestBody CreateTaskRequest createTaskRequest){
         return taskHandler.createTask(createTaskRequest);
     }
 
-    @GetMapping(Path.TASK_BY_ID)
+    @GetMapping(Path.TASK_ID)
     public TaskDetailsDTO getTaskDetails(@PathVariable Long id){
         return taskHandler.getById(id);
     }
@@ -56,7 +52,7 @@ public class TaskController {
         return taskHandler.getTaskAttachment(taskId, attachmentId);
     }
 
-    @PutMapping(Path.UPDATE)
+    @PutMapping(Path.TASK_ID)
     public TaskDTO update(@PathVariable Long id, @RequestBody UpdateTaskRequest request){
         return taskHandler.update(id, request);
     }
@@ -66,9 +62,9 @@ public class TaskController {
         taskHandler.addComment(taskId, commentDTO);
     }
 
-    @DeleteMapping(Path.DELETE_COMMENT)
-    public void deleteComment(@PathVariable Long commentId, @PathVariable Long taskId){
-        taskHandler.deleteComment(commentId, taskId);
+    @DeleteMapping(Path.COMMENT_ID+Path.TASK_ID)
+    public void deleteComment(@PathVariable Long commentId, @PathVariable Long id){
+        taskHandler.deleteComment(commentId, id);
     }
 
     @PostMapping(Path.ADD_ATTACHMENT)

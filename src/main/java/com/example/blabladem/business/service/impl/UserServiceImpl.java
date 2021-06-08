@@ -1,7 +1,7 @@
-package com.example.blabladem.api.service.impl;
+package com.example.blabladem.business.service.impl;
 
-import com.example.blabladem.api.repository.UserRepository;
-import com.example.blabladem.api.service.UserService;
+import com.example.blabladem.repository.UserRepository;
+import com.example.blabladem.business.service.UserService;
 import com.example.blabladem.domain.User;
 import com.example.blabladem.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;

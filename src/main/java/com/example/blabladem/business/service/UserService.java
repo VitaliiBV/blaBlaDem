@@ -1,4 +1,4 @@
-package com.example.blabladem.api.service;
+package com.example.blabladem.business.service;
 
 import com.example.blabladem.domain.User;
 

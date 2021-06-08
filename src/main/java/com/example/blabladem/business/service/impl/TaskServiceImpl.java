@@ -1,9 +1,9 @@
-package com.example.blabladem.api.service.impl;
+package com.example.blabladem.business.service.impl;
 
-import com.example.blabladem.api.repository.CommentRepository;
-import com.example.blabladem.api.repository.TaskAttachmentRepository;
-import com.example.blabladem.api.repository.TaskRepository;
-import com.example.blabladem.api.service.TaskService;
+import com.example.blabladem.repository.CommentRepository;
+import com.example.blabladem.repository.TaskAttachmentRepository;
+import com.example.blabladem.repository.TaskRepository;
+import com.example.blabladem.business.service.TaskService;
 import com.example.blabladem.domain.Task;
 import com.example.blabladem.domain.TaskAttachment;
 import com.example.blabladem.exception.BadRequestException;

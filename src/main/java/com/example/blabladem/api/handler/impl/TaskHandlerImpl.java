@@ -1,9 +1,8 @@
 package com.example.blabladem.api.handler.impl;
 
 import com.example.blabladem.api.handler.TaskHandler;
-import com.example.blabladem.api.impl.ExternalUserInfoServiceImpl;
-import com.example.blabladem.api.service.TaskService;
-import com.example.blabladem.api.service.UserService;
+import com.example.blabladem.business.service.TaskService;
+import com.example.blabladem.business.service.UserService;
 import com.example.blabladem.domain.Comment;
 import com.example.blabladem.domain.Task;
 import com.example.blabladem.domain.TaskAttachment;
@@ -11,9 +10,9 @@ import com.example.blabladem.domain.TaskDetailsDTO;
 import com.example.blabladem.dto.CommentDTO;
 import com.example.blabladem.dto.TaskDTO;
 import com.example.blabladem.dto.request.CreateTaskRequest;
-import com.example.blabladem.dto.request.GetAllTasksRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
 import com.example.blabladem.exception.BadRequestException;
+import com.example.blabladem.thirdparty.impl.ExternalUserInfoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -37,9 +36,9 @@ public class TaskHandlerImpl implements TaskHandler {
     private final ExternalUserInfoServiceImpl externalUserInfoService;
 
     @Override
-    public Page<TaskDTO> getAll(GetAllTasksRequest request, Pageable pageable) {
+    public Page<TaskDTO> getAll(Long departmentId, Pageable pageable) {
 
-        Page<Task> tasks = taskService.getAll(request.getDepartmentId(), pageable);
+        Page<Task> tasks = taskService.getAll(departmentId, pageable);
 
         Set<Long> userIds = new HashSet<>();
 

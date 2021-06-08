@@ -1,4 +1,4 @@
-package com.example.blabladem.api.repository;
+package com.example.blabladem.repository;
 
 import com.example.blabladem.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
