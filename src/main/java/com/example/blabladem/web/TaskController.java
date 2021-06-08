@@ -6,6 +6,7 @@ import com.example.blabladem.dto.CommentDTO;
 import com.example.blabladem.dto.TaskAttachmentDTO;
 import com.example.blabladem.dto.TaskDTO;
 import com.example.blabladem.dto.request.CreateTaskRequest;
+import com.example.blabladem.dto.request.GetAllTasksRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,9 +36,9 @@ public class TaskController {
         String ATTACHMENT_BY_TASK_ID_AND_ID = "/{taskId}/{attachmentId}";
     }
 
-    @GetMapping
-    public Page<TaskDTO> getAllTasks(@RequestParam(value = "departmentId") Long departmentId, Pageable pageable){
-        return taskHandler.getAll(departmentId, pageable);
+    @PostMapping
+    public Page<TaskDTO> getAllTasks(@RequestBody GetAllTasksRequest request, Pageable pageable){
+        return taskHandler.getAll(request, pageable);
     }
 
     @PostMapping(Path.CREATE)

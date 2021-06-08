@@ -10,8 +10,8 @@ import com.example.blabladem.domain.TaskAttachment;
 import com.example.blabladem.domain.TaskDetailsDTO;
 import com.example.blabladem.dto.CommentDTO;
 import com.example.blabladem.dto.TaskDTO;
-import com.example.blabladem.dto.UserDTO;
 import com.example.blabladem.dto.request.CreateTaskRequest;
+import com.example.blabladem.dto.request.GetAllTasksRequest;
 import com.example.blabladem.dto.request.UpdateTaskRequest;
 import com.example.blabladem.exception.BadRequestException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +37,9 @@ public class TaskHandlerImpl implements TaskHandler {
     private final ExternalUserInfoServiceImpl externalUserInfoService;
 
     @Override
-    public Page<TaskDTO> getAll(Long departmentId, Pageable pageable) {
+    public Page<TaskDTO> getAll(GetAllTasksRequest request, Pageable pageable) {
 
-        Page<Task> tasks = taskService.getAll(departmentId, pageable);
+        Page<Task> tasks = taskService.getAll(request.getDepartmentId(), pageable);
 
         Set<Long> userIds = new HashSet<>();
 
